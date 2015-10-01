@@ -44,7 +44,7 @@ func main() {
 
 	for id = 0; id < count; id++ {
 		//Have each request asynchronous
-		go func() {
+		go func(id uint32) {
 			err := errors.New("")
 			timeoutChan := make(chan bool, 1)
 
@@ -70,7 +70,7 @@ func main() {
 				latency := resp.Latency
 				successOut.Printf(successFmt, id, fullAddr, latency, playerCount)
 			}
-		}()
+		}(id)
 		time.Sleep(interval * time.Millisecond)
 	}
 }
