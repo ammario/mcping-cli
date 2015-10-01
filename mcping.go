@@ -42,7 +42,7 @@ func main() {
 
 	fullAddr := fmt.Sprint(host, ":", port)
 
-	for id = 0; id < count; id++ {
+	for id = 1; id < count; id++ {
 		//Have each request asynchronous
 		go func(id uint32) {
 			err := errors.New("")
