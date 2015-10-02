@@ -6,9 +6,8 @@ This software is an implementation of [my MCPing library](https://github.com/amm
 ```bash
 git clone https://github.com/ammario/mcping-cli
 cd mcping-cli
-go get https://github.com/ammario/mcping
-go get https://github.com/alecthomas/kingpin
-go get https://github.com/fatih/color
+export GOPATH=`pwd`
+go get ./...
 go build
 sudo cp mcping-cli /usr/bin/mcping
 ```
