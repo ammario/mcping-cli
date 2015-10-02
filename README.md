@@ -20,3 +20,4 @@ mcping -h vapormc.co
 (1) vapormc.co:25565; latency=76ms players=(78/80)
 (2) vapormc.co:25565; latency=76ms players=(77/80)
 ```
+All responses are colored. If your count increases, the output will be green; if it drops, the output will be yellow; if it doesn't change, the output will be white.

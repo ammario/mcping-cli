@@ -34,7 +34,13 @@ func main() {
 
 	//Output colorer
 	failOut := color.New(color.FgRed)
-	successOut := color.New(color.FgGreen)
+
+    //Change color based on whether player count changed
+    stayOut := color.New(color.FgWhite)
+    riseOut := color.New(color.FgGreen)
+    dropOut := color.New(color.FgYellow)
+
+    var lastPlayerCount int;
 
 	//Output format strings
 	failFmt := "(%x) %s; %s\n"
@@ -44,7 +50,7 @@ func main() {
 
 	for id = 1; id < count; id++ {
 		//Have each request asynchronous
-		go func(id uint32) {
+		go func(pid uint32) {
 			err := errors.New("")
 			timeoutChan := make(chan bool, 1)
 
@@ -68,7 +74,14 @@ func main() {
 			} else {
 				playerCount := fmt.Sprint(resp.Online, "/", resp.Max)
 				latency := resp.Latency
-				successOut.Printf(successFmt, id, fullAddr, latency, playerCount)
+                if resp.Online == lastPlayerCount {
+                    stayOut.Printf(successFmt, id, fullAddr, latency, playerCount)
+                } else if resp.Online > lastPlayerCount {
+                    riseOut.Printf(successFmt, id, fullAddr, latency, playerCount)
+                } else if resp.Online < lastPlayerCount {
+                    dropOut.Printf(successFmt, id, fullAddr, latency, playerCount)
+                }
+                lastPlayerCount = resp.Online
 			}
 		}(id)
 		time.Sleep(interval * time.Millisecond)
