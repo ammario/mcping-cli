@@ -70,16 +70,16 @@ func main() {
 				err = mcping.TimeoutErr
 			}
 			if err != nil {
-				failOut.Printf(failFmt, id, fullAddr, err)
+				failOut.Printf(failFmt, pid, fullAddr, err)
 			} else {
 				playerCount := fmt.Sprint(resp.Online, "/", resp.Max)
 				latency := resp.Latency
                 if resp.Online == lastPlayerCount {
-                    stayOut.Printf(successFmt, id, fullAddr, latency, playerCount)
+                    stayOut.Printf(successFmt, pid, fullAddr, latency, playerCount)
                 } else if resp.Online > lastPlayerCount {
-                    riseOut.Printf(successFmt, id, fullAddr, latency, playerCount)
+                    riseOut.Printf(successFmt, pid, fullAddr, latency, playerCount)
                 } else if resp.Online < lastPlayerCount {
-                    dropOut.Printf(successFmt, id, fullAddr, latency, playerCount)
+                    dropOut.Printf(successFmt, pid, fullAddr, latency, playerCount)
                 }
                 lastPlayerCount = resp.Online
 			}
