@@ -12,7 +12,7 @@ import (
 func main() {
 	//Parse command line flags
 	var (
-		_host     = kingpin.Flag("host", "Hostname").Short('h').Required().String()
+		_host     = kingpin.Arg("host", "Hostname").Required().String()
 		_port     = kingpin.Flag("port", "Port number").Short('p').Default("25565").Int()
 		_timeout  = kingpin.Flag("timeout", "Timeout per ping (ms)").Short('t').Default("300").Int()
 		_interval = kingpin.Flag("interval", "Interval between pings (ms)").Short('i').Default("1000").Int()
@@ -35,12 +35,12 @@ func main() {
 	//Output colorer
 	failOut := color.New(color.FgRed)
 
-    //Change color based on whether player count changed
-    stayOut := color.New(color.FgWhite)
-    riseOut := color.New(color.FgGreen)
-    dropOut := color.New(color.FgYellow)
+	//Change color based on whether player count changed
+	stayOut := color.New(color.FgWhite)
+	riseOut := color.New(color.FgGreen)
+	dropOut := color.New(color.FgYellow)
 
-    var lastPlayerCount int;
+	var lastPlayerCount int
 
 	//Output format strings
 	failFmt := "(%x) %s; %s\n"
@@ -74,14 +74,14 @@ func main() {
 			} else {
 				playerCount := fmt.Sprint(resp.Online, "/", resp.Max)
 				latency := resp.Latency
-                if resp.Online == lastPlayerCount {
-                    stayOut.Printf(successFmt, pid, fullAddr, latency, playerCount)
-                } else if resp.Online > lastPlayerCount {
-                    riseOut.Printf(successFmt, pid, fullAddr, latency, playerCount)
-                } else if resp.Online < lastPlayerCount {
-                    dropOut.Printf(successFmt, pid, fullAddr, latency, playerCount)
-                }
-                lastPlayerCount = resp.Online
+				if resp.Online == lastPlayerCount {
+					stayOut.Printf(successFmt, pid, fullAddr, latency, playerCount)
+				} else if resp.Online > lastPlayerCount {
+					riseOut.Printf(successFmt, pid, fullAddr, latency, playerCount)
+				} else if resp.Online < lastPlayerCount {
+					dropOut.Printf(successFmt, pid, fullAddr, latency, playerCount)
+				}
+				lastPlayerCount = resp.Online
 			}
 		}(id)
 		time.Sleep(interval * time.Millisecond)
