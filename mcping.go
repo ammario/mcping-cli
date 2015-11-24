@@ -6,6 +6,7 @@ import (
 	"github.com/alecthomas/kingpin"
 	"github.com/ammario/mcping"
 	"github.com/fatih/color"
+	"os"
 	"time"
 )
 
@@ -47,10 +48,12 @@ func main() {
 	successFmt := "(%x) %s; latency=%vms players=(%s)\n"
 
 	fullAddr := fmt.Sprint(host, ":", port)
-
-	for id = 1; id < count; id++ {
+	pendingPings := 0
+	pingDoneChan := make(chan bool, 1)
+	for id = 0; id < count; id++ {
 		//Have each request asynchronous
 		go func(pid uint32) {
+			pendingPings = pendingPings + 1
 			err := errors.New("")
 			timeoutChan := make(chan bool, 1)
 
@@ -83,7 +86,16 @@ func main() {
 				}
 				lastPlayerCount = resp.Online
 			}
+			pendingPings = pendingPings - 1
 		}(id)
 		time.Sleep(interval * time.Millisecond)
+	}
+	if pendingPings != 0 {
+		for {
+			<-pingDoneChan
+			if pendingPings == 0 {
+				os.Exit(0)
+			}
+		}
 	}
 }
