@@ -15,7 +15,7 @@ sudo cp mcping-cli /usr/bin/mcping
 
 ## Basic Usage
 ```bash
-mcping -h vapormc.co
+mcping -h vapormc.co:25565
 (0) vapormc.co:25565; latency=76ms players=(78/80)
 (1) vapormc.co:25565; latency=76ms players=(78/80)
 (2) vapormc.co:25565; latency=76ms players=(77/80)

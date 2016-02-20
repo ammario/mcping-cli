@@ -13,8 +13,7 @@ import (
 func main() {
 	//Parse command line flags
 	var (
-		_host     = kingpin.Arg("host", "Hostname").Required().String()
-		_port     = kingpin.Flag("port", "Port number").Short('p').Default("25565").Int()
+		_addr     = kingpin.Arg("addr", "host:port").Required().String()
 		_timeout  = kingpin.Flag("timeout", "Timeout per ping (ms)").Short('t').Default("300").Int()
 		_interval = kingpin.Flag("interval", "Interval between pings (ms)").Short('i').Default("1000").Int()
 		_count    = kingpin.Flag("count", "Total amount of pings to send").Short('c').Default("4294967295").Int()
@@ -22,15 +21,13 @@ func main() {
 	)
 
 	kingpin.Parse()
-
-	host := *_host
-	port := uint16(*_port)
 	timeout := time.Duration(*_timeout)
 	interval := time.Duration(*_interval)
 	count := uint32(*_count)
+	addr := *_addr
 
 	if *_debug {
-		resp, err := mcping.Ping(host, port)
+		resp, err := mcping.Ping(addr)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -69,7 +66,6 @@ func main() {
 	failFmt := "(%x) %s; %s\n"
 	successFmt := "(%x) %s; latency=%vms players=(%s)\n"
 
-	fullAddr := fmt.Sprint(host, ":", port)
 	pendingPings := 0
 	for id = 0; id < count; id++ {
 		//Have each request asynchronous
@@ -87,23 +83,23 @@ func main() {
 				timeoutChan <- true
 			}()
 			go func() {
-				resp, err = mcping.Ping(host, port)
+				resp, err = mcping.Ping(addr)
 				timeoutChan <- false
 			}()
 			if <-timeoutChan {
-				err = mcping.TimeoutErr
+				err = mcping.ErrTimeout
 			}
 			if err != nil {
-				failOut.Printf(failFmt, pid, fullAddr, err)
+				failOut.Printf(failFmt, pid, *_addr, err)
 			} else {
 				playerCount := fmt.Sprint(resp.Online, "/", resp.Max)
 				latency := resp.Latency
 				if resp.Online == lastPlayerCount {
-					stayOut.Printf(successFmt, pid, fullAddr, latency, playerCount)
+					stayOut.Printf(successFmt, pid, *_addr, latency, playerCount)
 				} else if resp.Online > lastPlayerCount {
-					riseOut.Printf(successFmt, pid, fullAddr, latency, playerCount)
+					riseOut.Printf(successFmt, pid, *_addr, latency, playerCount)
 				} else if resp.Online < lastPlayerCount {
-					dropOut.Printf(successFmt, pid, fullAddr, latency, playerCount)
+					dropOut.Printf(successFmt, pid, *_addr, latency, playerCount)
 				}
 				lastPlayerCount = resp.Online
 			}
