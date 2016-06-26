@@ -4,12 +4,10 @@ The goal of this software is to provide a UNIX ping like tool for Minecraft serv
 This software is an implementation of [my MCPing library](https://github.com/ammario/mcping)
 ## Install
 ```bash
-git clone https://github.com/ammario/mcping-cli
-cd mcping-cli
+cd /tmp
 export GOPATH=`pwd`
-go get ./...
-go build
-sudo cp mcping-cli /usr/bin/mcping
+go get github.com/ammario/mcping-cli
+sudo cp /bin/mcping-cli /usr/bin/mcping
 ```
 
 
